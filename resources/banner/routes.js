@@ -7,7 +7,34 @@ const database = require('../../connection/database');
 const TABLE_NAME = 'tb_banner';
 const BASE_URL = '/banners';
 
+const pessoasAutorizadas = [
+    {
+        nome: 'Sara',
+        token: '4246'
+    },
+    {
+        nome: 'Marilia',
+        token: '7700'
+    },
+    {
+        nome: 'Vanessa',
+        token: '4246'
+    }
+]
+
+
 app.get(BASE_URL, async (req, res) => {
+    //filtrar apenas as pessoas qur possuem aquele token
+    let verificadas = pessoasAutorizadas.filter(
+        cada => cada.token === req.headers.token
+    );
+    
+    //se nao existir ngm com aquele token, então é acesso não autorizado
+    if (req.headers.senha === 0) {
+        res.sendStatus(401);
+        return;
+    }
+
     let dados = await database.execute(`SELECT * FROM ${TABLE_NAME}`);
 
     res.send(dados);
